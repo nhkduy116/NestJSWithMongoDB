@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Course } from './schemas/course.schema';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class CoursesService {
-  create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+  constructor(@InjectModel('Course') private readonly courseModel: Model<Course>) { }
+
+  async create(course: Course): Promise<Course> {
+    const createdCourse = new this.courseModel(course);
+    return await createdCourse.save();
   }
 
-  findAll() {
-    return `This action returns all courses`;
+  async findAll(): Promise<Course[]> {
+    return await this.courseModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
+  async findOne(id: string): Promise<Course> {
+    return await this.courseModel.findById(id).exec();
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
+  async update(id: string, course: Course): Promise<Course> {
+    return await this.courseModel.findByIdAndUpdate(id, course, { new: true });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} course`;
-  }
+  // async delete(id: string): Promise<Course> {
+  //   const objectId = new Types.ObjectId(id); 
+
+  //   const deletedCourse = await this.courseModel.findByIdAndDelete(objectId);
+
+  //   if (!deletedCourse) {
+  //     throw new NotFoundException('Not found course');
+  //   }
+
+  //   return deletedCourse;
+  // }
 }
