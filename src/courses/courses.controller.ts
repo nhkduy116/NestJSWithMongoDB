@@ -9,8 +9,8 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) { }
 
   @Post()
-  async create(@Body() course: Course): Promise<Course> {
-    return await this.coursesService.create(course);
+  async create(@Body() createCourseDto: CreateCourseDto) {
+    return await this.coursesService.create(createCourseDto);
   }
 
   @Get()
@@ -24,12 +24,12 @@ export class CoursesController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() course: Course): Promise<Course> {
+  async update(@Param('id') id: string, @Body() course: Course) {
     return await this.coursesService.update(id, course);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.coursesService.remove(id);
-  // }
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return this.coursesService.delete(id);
+  }
 }

@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
 
 @Schema()
 export class Course {
-  @Prop()
+  @Prop({ required: true })
   name: string;
 
   @Prop()
@@ -14,8 +15,17 @@ export class Course {
   @Prop()
   videoId: string;
 
-  @Prop()
+  @Prop({ required: true, unique: true })
   slug: string;
+
+  @Prop({ default: false })
+  deleted: boolean;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
 
 }
 

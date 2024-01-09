@@ -7,11 +7,12 @@ import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class CoursesService {
-  constructor(@InjectModel('Course') private readonly courseModel: Model<Course>) { }
+  constructor(@InjectModel(Course.name) private readonly courseModel: Model<Course>) { }
 
-  async create(course: Course): Promise<Course> {
-    const createdCourse = new this.courseModel(course);
-    return await createdCourse.save();
+  async create(createCourseDto: CreateCourseDto) {
+    const createdCourse = await this.courseModel.create(createCourseDto);
+    return createdCourse;
+    // return createdCourse ? { message: 'Created successfully' } : { message: 'Created failed' };
   }
 
   async findAll(): Promise<Course[]> {
@@ -26,15 +27,8 @@ export class CoursesService {
     return await this.courseModel.findByIdAndUpdate(id, course, { new: true });
   }
 
-  // async delete(id: string): Promise<Course> {
-  //   const objectId = new Types.ObjectId(id); 
-
-  //   const deletedCourse = await this.courseModel.findByIdAndDelete(objectId);
-
-  //   if (!deletedCourse) {
-  //     throw new NotFoundException('Not found course');
-  //   }
-
-  //   return deletedCourse;
-  // }
+  async delete(id: string) {
+    const deletedCat = await this.courseModel.findByIdAndDelete(id).exec();
+    return deletedCat ? { message: 'Deleted successfully' } : { message: 'Deleted failed' };
+  }
 }
